@@ -20,6 +20,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Project
+#
+Extension/development
+Extension/production
+
 # Editor directories and files
 #
 .idea
