@@ -1,6 +1,10 @@
 let selectionActive = false;
 let startX, startY, endX, endY, scrollTop, scrollLeft, pageX, pageY;
 let selectionRect = null;
+let rectDot, dotTop, dotBottom, dotLeft, dotRight;
+const dotsArray = ["dotTop", "dotBottom", "dotLeft", "dotRight"];
+
+import $ from "jquery";
 
 // create selection mask
 const captureMask = document.createElement("div");
@@ -12,8 +16,8 @@ document.body.appendChild(captureMask);
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "startSelection") {
     startSelection();
-  }else if (message.action === 'captureRect') {
-    captureRect()
+  } else if (message.action === "captureRect") {
+    captureRect();
   }
 });
 
@@ -55,6 +59,20 @@ function handleMouseDown(e) {
   selectionRect.style.width = `0px`;
   selectionRect.style.height = `0px`;
 
+  let rectDot = document.getElementsByClassName("rect-dot");
+  if (!rectDot.length) {
+    dotsArray.forEach((_id) => {
+      createDot(_id);
+    });
+  }
+  // Set dots visible
+  triggerDots();
+
+  dotTop = document.getElementById("dotTop");
+  dotBottom = document.getElementById("dotBottom");
+  dotLeft = document.getElementById("dotLeft");
+  dotRight = document.getElementById("dotRight");
+
   document.addEventListener("mousemove", handleMouseMove);
   document.addEventListener("mouseup", handleMouseUp);
 }
@@ -63,8 +81,16 @@ function handleMouseDown(e) {
 function createSelectionRect() {
   selectionRect = document.createElement("div");
   const _style = `position: fixed; border: 2px dashed #4CAF50; background-color: rgba(76, 175, 80, 0.2); z-index: 2147483647; pointerEvents: none;`;
-  selectionRect.style = _style;
   document.body.appendChild(selectionRect);
+}
+
+function createDot(_id) {
+  let dot = document.createElement("div");
+  dot.className = "rect-dot";
+  dot.id = _id;
+  dot.style =
+    "display: none; position: fixed; width: 0px; border: 4px solid #4CAF50; border-radius: 50%;";
+  document.body.appendChild(dot);
 }
 
 function handleMouseMove(e) {
@@ -83,6 +109,16 @@ function handleMouseMove(e) {
   selectionRect.style.top = `${rectY}px`;
   selectionRect.style.width = `${rectWidth}px`;
   selectionRect.style.height = `${rectHeight}px`;
+
+  // set the value of dot
+  dotTop.style.left = `${rectX - 2 + rectWidth / 2}px`;
+  dotTop.style.top = `${rectY - 2}px`;
+  dotBottom.style.left = `${rectX - 2 + rectWidth / 2}px`;
+  dotBottom.style.top = `${rectY - 2 + rectHeight}px`;
+  dotLeft.style.left = `${rectX - 2}px`;
+  dotLeft.style.top = `${rectY - 2 + rectHeight / 2}px`;
+  dotRight.style.left = `${rectX - 2 + rectWidth}px`;
+  dotRight.style.top = `${rectY - 2 + rectHeight / 2}px`;
 }
 
 // Mouse up event
@@ -123,6 +159,7 @@ function saveCoordinates(coordsData) {
 function clearSelection() {
   selectionActive = false;
   captureMask.style.display = "none";
+  triggerDots("hide");
 
   if (selectionRect) {
     selectionRect.remove();
@@ -131,6 +168,21 @@ function clearSelection() {
 
   captureMask.removeEventListener("mousedown", handleMouseDown);
   document.removeEventListener("keydown", handleKeyEscape);
+}
+
+/**
+ *
+ * @param {string} value
+ */
+function triggerDots(value) {
+  let dots = $("rect-dot");
+  if (dots.length) {
+    if (value === "hide") {
+      dots.hide();
+    } else {
+      dots.show();
+    }
+  }
 }
 
 /**
