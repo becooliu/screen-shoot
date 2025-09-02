@@ -31,6 +31,11 @@ module.exports = (env, argv) => {
         },
       ],
     },
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "src/"),
+      },
+    },
     plugins: [
       new CleanWebpackPlugin({
         cleanOnceBeforeBuildPatterns: [outputPath],
