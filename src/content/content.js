@@ -1,10 +1,7 @@
+import { throttle } from "@/utils/tools";
 let selectionActive = false;
 let startX, startY, endX, endY, scrollTop, scrollLeft, pageX, pageY;
 let selectionRect = null;
-let rectDot, dotTop, dotBottom, dotLeft, dotRight;
-const dotsArray = ["dotTop", "dotBottom", "dotLeft", "dotRight"];
-
-import $ from "jquery";
 
 // create selection mask
 const captureMask = document.createElement("div");
@@ -23,6 +20,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 const startSelection = () => {
   // active captureMask
+  console.log("start select area...");
   selectionActive = true;
   captureMask.style.display = "block";
 
@@ -38,7 +36,7 @@ function handleKeyEscape(e) {
   }
 }
 
-function handleMouseDown(e) {
+async function handleMouseDown(e) {
   if (!selectionActive) return;
 
   startX = e.clientX;
@@ -51,7 +49,8 @@ function handleMouseDown(e) {
   console.log("scrollTop, scrollLeft", scrollTop, scrollLeft);
 
   if (!selectionRect) {
-    createSelectionRect();
+    console.log("!selectionRect == true");
+    await createSelectionRect();
   }
 
   selectionRect.style.left = `${startX}px`;
@@ -59,38 +58,19 @@ function handleMouseDown(e) {
   selectionRect.style.width = `0px`;
   selectionRect.style.height = `0px`;
 
-  let rectDot = document.getElementsByClassName("rect-dot");
-  if (!rectDot.length) {
-    dotsArray.forEach((_id) => {
-      createDot(_id);
-    });
-  }
-  // Set dots visible
-  triggerDots();
-
-  dotTop = document.getElementById("dotTop");
-  dotBottom = document.getElementById("dotBottom");
-  dotLeft = document.getElementById("dotLeft");
-  dotRight = document.getElementById("dotRight");
-
-  document.addEventListener("mousemove", handleMouseMove);
+  document.addEventListener("mousemove", throttle(handleMouseMove, 50));
   document.addEventListener("mouseup", handleMouseUp);
 }
 
 // Create rect selection
-function createSelectionRect() {
-  selectionRect = document.createElement("div");
-  const _style = `position: fixed; border: 2px dashed #4CAF50; background-color: rgba(76, 175, 80, 0.2); z-index: 2147483647; pointerEvents: none;`;
-  document.body.appendChild(selectionRect);
-}
-
-function createDot(_id) {
-  let dot = document.createElement("div");
-  dot.className = "rect-dot";
-  dot.id = _id;
-  dot.style =
-    "display: none; position: fixed; width: 0px; border: 4px solid #4CAF50; border-radius: 50%;";
-  document.body.appendChild(dot);
+async function createSelectionRect() {
+  return new Promise((resolve, reject) => {
+    selectionRect = document.createElement("div");
+    const _style = `position: fixed; border: 2px dashed #4CAF50; background-color: rgba(76, 175, 80, 0.2); z-index: 2147483647; pointerEvents: none;`;
+    selectionRect.style = _style;
+    document.body.appendChild(selectionRect);
+    resolve();
+  });
 }
 
 function handleMouseMove(e) {
@@ -98,6 +78,10 @@ function handleMouseMove(e) {
   // caculate rect corrdinate & size
   endX = e.clientX;
   endY = e.clientY;
+  console.log("e.clientX, e.clientY", e.clientX, e.clientY);
+
+  console.log("startX, startY: ", startX, startY);
+  console.log("endX, endY: ", endX, endY);
 
   const rectX = Math.min(startX, endX);
   const rectY = Math.min(startY, endY);
@@ -105,20 +89,11 @@ function handleMouseMove(e) {
   const rectHeight = Math.abs(endY - startY);
 
   // Set the value of selectionRect
+  console.log("selectionRect", selectionRect);
   selectionRect.style.left = `${rectX}px`;
   selectionRect.style.top = `${rectY}px`;
   selectionRect.style.width = `${rectWidth}px`;
   selectionRect.style.height = `${rectHeight}px`;
-
-  // set the value of dot
-  dotTop.style.left = `${rectX - 2 + rectWidth / 2}px`;
-  dotTop.style.top = `${rectY - 2}px`;
-  dotBottom.style.left = `${rectX - 2 + rectWidth / 2}px`;
-  dotBottom.style.top = `${rectY - 2 + rectHeight}px`;
-  dotLeft.style.left = `${rectX - 2}px`;
-  dotLeft.style.top = `${rectY - 2 + rectHeight / 2}px`;
-  dotRight.style.left = `${rectX - 2 + rectWidth}px`;
-  dotRight.style.top = `${rectY - 2 + rectHeight / 2}px`;
 }
 
 // Mouse up event
@@ -159,7 +134,6 @@ function saveCoordinates(coordsData) {
 function clearSelection() {
   selectionActive = false;
   captureMask.style.display = "none";
-  triggerDots("hide");
 
   if (selectionRect) {
     selectionRect.remove();
@@ -167,22 +141,9 @@ function clearSelection() {
   }
 
   captureMask.removeEventListener("mousedown", handleMouseDown);
+  document.removeEventListener("mousemove", handleMouseMove);
+  document.removeEventListener("mouseup", handleMouseUp);
   document.removeEventListener("keydown", handleKeyEscape);
-}
-
-/**
- *
- * @param {string} value
- */
-function triggerDots(value) {
-  let dots = $("rect-dot");
-  if (dots.length) {
-    if (value === "hide") {
-      dots.hide();
-    } else {
-      dots.show();
-    }
-  }
 }
 
 /**
