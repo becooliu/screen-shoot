@@ -1,0 +1,138 @@
+<template id="extension-panel-template">
+  <style>
+    :host {
+      --primary-color: #4285f4;
+      --text-color: #333;
+      --border-radius: 8px;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .panel-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 320px;
+      min-height: 200px;
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      z-index: 10000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-header {
+      padding: 16px;
+      background: var(--primary-color);
+      color: white;
+      border-top-left-radius: var(--border-radius);
+      border-top-right-radius: var(--border-radius);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: move;
+      user-select: none;
+    }
+
+    .panel-title {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .panel-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .panel-content {
+      padding: 16px;
+      flex: 1;
+      overflow-y: auto;
+      max-height: 400px;
+    }
+
+    .panel-footer {
+      padding: 12px 16px;
+      border-top: 1px solid #eee;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .btn-primary {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #f1f3f4;
+      color: #5f6368;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 500;
+      font-size: 12px;
+      color: #5f6368;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+  </style>
+
+  <div class="panel-container">
+    <div class="panel-header">
+      <span class="panel-title">扩展面板</span>
+      <button class="panel-close" part="close-button">×</button>
+    </div>
+    
+    <div class="panel-content" part="content-area">
+      <slot name="content">
+        <!-- 默认内容 -->
+        <div class="form-group">
+          <label class="form-label">输入内容</label>
+          <input type="text" class="form-input" part="input-field" placeholder="请输入...">
+        </div>
+      </slot>
+    </div>
+
+    <div class="panel-footer">
+      <button class="btn btn-secondary" part="cancel-button">取消</button>
+      <button class="btn btn-primary" part="submit-button">确认</button>
+    </div>
+  </div>
+</template>

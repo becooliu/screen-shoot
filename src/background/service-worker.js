@@ -1,5 +1,31 @@
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+// listin extension icon action
+chrome.action.onClicked.addListener(async (tab) => {
+  try {
+    // 注入内容脚本
+    await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ["content/panel-component.js", "content/content-script.js"],
+    });
 
+    console.log("action 操作");
+
+    // 执行切换面板
+    await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      function: async () => {
+        await chrome.runtime.sendMessage({ type: "scriptLoaded" });
+        if (window.extensionPanel) {
+          console.log("回调");
+          window.extensionPanel.toggle();
+        }
+      },
+    });
+  } catch (error) {
+    console.error("注入面板失败:", error);
+  }
+});
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "saveCoordinates") {
     chrome.storage.local.set({ regionCoords: message.coords }, async () => {
       // Create JSON blob and download

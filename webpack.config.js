@@ -1,6 +1,7 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const { cleanData } = require("jquery");
 
 module.exports = (env, argv) => {
   const isDevelopment = argv.mode === "development";
@@ -11,13 +12,14 @@ module.exports = (env, argv) => {
   return {
     entry: {
       "service-worker": "./src/background/service-worker.js",
-      content: "./src/content/content.js",
-      popup: "./src/popup/popup.js",
+      "content/content-script": "./src/content/content-script.js",
+      "content/panel-component": "./src/content/panel-component.js",
     },
     devtool: false,
     output: {
       path: outputPath,
       filename: "[name].js",
+      clean: true,
     },
     module: {
       rules: [
@@ -53,6 +55,10 @@ module.exports = (env, argv) => {
           {
             from: "src/popup/popup.css",
             to: "./popup/",
+          },
+          {
+            from: "src/content/panel-template.html",
+            to: "./content/",
           },
           {
             from: "src/icons",

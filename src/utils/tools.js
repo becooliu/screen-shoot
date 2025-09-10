@@ -27,3 +27,18 @@ export const throttle = function (func, delay) {
     }
   };
 };
+
+// 判断元素是否可见
+export const isElementVisibleBySelector = function (selector) {
+  const elements = document.querySelectorAll(selector);
+  for (let element of elements) {
+    if (
+      window.getComputedStyle(element).display !== "none" &&
+      element.offsetWidth > 0 &&
+      element.offsetHeight > 0
+    ) {
+      return true; // 至少有一个元素是可见的
+    }
+  }
+  return false; // 没有找到任何可见的元素
+};
