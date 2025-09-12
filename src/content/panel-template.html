@@ -1,138 +1,140 @@
-<template id="extension-panel-template">
+<div id="extension-panel-template">
   <style>
-    :host {
-      --primary-color: #4285f4;
-      --text-color: #333;
-      --border-radius: 8px;
-      --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    #extension-panel-template {
+        width: 300px;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+        color: white;
+        min-height: 350px;
     }
 
-    .panel-container {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      width: 320px;
-      min-height: 200px;
-      background: white;
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow);
-      z-index: 10000;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      display: flex;
-      flex-direction: column;
+    .container {
+        padding: 20px;
     }
 
-    .panel-header {
-      padding: 16px;
-      background: var(--primary-color);
-      color: white;
-      border-top-left-radius: var(--border-radius);
-      border-top-right-radius: var(--border-radius);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: move;
-      user-select: none;
+    h1 {
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     }
 
-    .panel-title {
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    .panel-close {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-      padding: 0;
-      width: 24px;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .panel-content {
-      padding: 16px;
-      flex: 1;
-      overflow-y: auto;
-      max-height: 400px;
-    }
-
-    .panel-footer {
-      padding: 12px 16px;
-      border-top: 1px solid #eee;
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 25px;
     }
 
     .btn {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    .btn-primary {
-      background: var(--primary-color);
-      color: white;
+    .btn svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
     }
 
-    .btn-secondary {
-      background: #f1f3f4;
-      color: #5f6368;
+    .btn.primary {
+        background-color: #4CAF50;
+        color: white;
     }
 
-    .form-group {
-      margin-bottom: 12px;
+    .btn.primary:hover {
+        background-color: #45a049;
+        transform: translateY(-2px);
     }
 
-    .form-label {
-      display: block;
-      margin-bottom: 4px;
-      font-weight: 500;
-      font-size: 12px;
-      color: #5f6368;
+    .btn.secondary {
+        background-color: #2196F3;
+        color: white;
     }
 
-    .form-input {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 13px;
+    .btn.secondary:hover {
+        background-color: #0b7dda;
+        transform: translateY(-2px);
     }
 
-    .form-input:focus {
-      outline: none;
-      border-color: var(--primary-color);
+    .instructions {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .instructions h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+    }
+
+    .instructions ol {
+        padding-left: 20px;
+        margin: 0;
+    }
+
+    .instructions li {
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+    }
+
+    .status {
+        text-align: center;
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+    }
+
+    #statusText {
+        margin: 0;
+        font-weight: 500;
+        color: #FFD700;
     }
   </style>
 
-  <div class="panel-container">
-    <div class="panel-header">
-      <span class="panel-title">扩展面板</span>
-      <button class="panel-close" part="close-button">×</button>
+  <div class="container">
+    <h1>区域截图</h1>
+    <div class="buttons">
+      <button id="getAndSavePosition" class="btn primary">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path
+            d="M17 5.33C17 3.5 15.5 2 13.67 2H5.33C3.5 2 2 3.5 2 5.33v13.34C2 20.5 3.5 22 5.33 22h8.34c1.83 0 3.33-1.5 3.33-3.33V5.33zM8 18H6v-2h2v2zm0-4H6v-2h2v2zm0-4H6V8h2v2zm6 8h-4v-2h4v2zm0-4h-4v-2h4v2zm0-4h-4V8h4v2z" />
+        </svg>
+        选择区域
+      </button>
+      <button id="capture" class="btn secondary">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path
+            d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+        </svg>
+        截图
+      </button>
     </div>
-    
-    <div class="panel-content" part="content-area">
-      <slot name="content">
-        <!-- 默认内容 -->
-        <div class="form-group">
-          <label class="form-label">输入内容</label>
-          <input type="text" class="form-input" part="input-field" placeholder="请输入...">
-        </div>
-      </slot>
+    <div class="instructions">
+      <h3>如何使用</h3>
+      <ol>
+        <li>点击"选择区域"按钮，并用鼠标在页面选择需要截图的区域</li>
+        <li>所框选的区域坐标将自动保存，文件名可在保存前自定义</li>
+        <li>点击"截图"按钮可使用之前保存的配置，自动截取指定区域的图片</li>
+      </ol>
     </div>
-
-    <div class="panel-footer">
-      <button class="btn btn-secondary" part="cancel-button">取消</button>
-      <button class="btn btn-primary" part="submit-button">确认</button>
+    <div class="status">
+      <p id="statusText">准备好选择要截图的区域</p>
     </div>
   </div>
-</template>
+  </div>

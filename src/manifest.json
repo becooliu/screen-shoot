@@ -12,13 +12,15 @@
   "icons": {
     "128": "icons/icon128.png"
   },
+  "content_scripts": [
+    {
+      "js": ["content/panel-component.js", "content/content-script.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "web_accessible_resources": [
     {
-      "resources": [
-        "content/panel-template.html",
-        "content/panel-component.js",
-        "content/content-script.js"
-      ],
+      "resources": ["content/panel-template.html"],
       "matches": ["<all_urls>"]
     }
   ]

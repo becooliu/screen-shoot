@@ -1,12 +1,12 @@
 import { isElementVisibleBySelector } from "../utils/tools";
-
 class PanelManager {
   constructor() {
     this.panel = null;
     this.initializePanel();
   }
 
-  initializePanel() {
+  async initializePanel() {
+    await this.registerCustomElements();
     // 检查是否已存在面板
     if (document.querySelector("extension-panel")) {
       this.panel = document.querySelector("extension-panel");
@@ -61,9 +61,3 @@ class PanelManager {
     }
   }
 }
-
-// 全局面板管理器
-window.extensionPanel = new PanelManager();
-
-// 暴露给其他脚本使用
-export { PanelManager };
