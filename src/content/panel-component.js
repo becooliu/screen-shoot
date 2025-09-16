@@ -9,36 +9,45 @@ class ExtensionPanel {
   }
 
   async initPanel() {
-    this.createShadowHost();
+    await this.createShadowHost();
     await this.loadTemplate();
-    this.render();
+    // this.render();
     this.bindEvents();
+    // this.togglePanel();
   }
 
   // 创建shadowroot
-  createShadowHost() {
-    const shadowHost = document.createElement("div");
-    shadowHost.id = this.shadowHostId;
-    document.body.appendChild(shadowHost);
+  async createShadowHost() {
+    const shadowHostEel = document.getElementById(this.shadowHostId);
+    console.log(shadowHostEel?.length, "length");
+    if (shadowHostEel?.length) return;
+    try {
+      const shadowHost = document.createElement("div");
+      shadowHost.id = this.shadowHostId;
+      document.body.appendChild(shadowHost);
 
-    this.shadowHost = shadowHost;
-    this.shadowHost.style.cssText = `position: fixed; top: 20px; right: 20px; z-index: 2147481640;`;
-    this.shadowRoot = shadowHost.attachShadow({ mode: "open" });
+      this.shadowHost = shadowHost;
+      this.shadowHost.style.cssText = `position: fixed; top: 20px; right: 20px; z-index: 2147481640;`;
+      this.shadowRoot = shadowHost.attachShadow({ mode: "open" });
+      await this.loadTemplate();
+    } catch (error) {
+      console.error("添加shadowroot 节点失败：", error);
+    }
   }
 
   async loadTemplate() {
     // 从扩展资源加载模板
     const templatePath = chrome.runtime.getURL("content/panel-template.html");
-    console.log(templatePath, 12);
     try {
       const response = await fetch(templatePath);
       this.template = await response.text();
+      await this.render();
     } catch (error) {
       console.error("加载面板模板失败:", error);
     }
   }
 
-  render() {
+  async render() {
     if (this.template) {
       this.shadowRoot.innerHTML = this.template;
     }
@@ -46,7 +55,7 @@ class ExtensionPanel {
 
   bindEvents() {
     // 关闭按钮
-    const closeBtn = this.shadowRoot.querySelector(".panel-close");
+    const closeBtn = this.shadowRoot.querySelector(".close-panel");
     if (closeBtn) {
       closeBtn.addEventListener("click", () => this.hide());
     }
@@ -92,21 +101,31 @@ class ExtensionPanel {
   }
 
   hide() {
+    console.log("hide");
     this.shadowHost.style.display = "none";
     this.isVisible = false;
     // this.dispatchEvent(new CustomEvent("panel-hide"));
   }
 
   toggle() {
-    const panel = document.getElementById(this.shadowHostId);
     if (this.isVisible) {
       this.hide();
     } else {
       this.show();
     }
   }
+
+  /* togglePanel() {
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      console.log("123");
+      if (message.type === "togglePanel") {
+        console.log("listn togglePanel");
+        this.toggle();
+      }
+    });
+  } */
 }
 
-export { ExtensionPanel };
+window.extenssionPanel = ExtensionPanel;
 
 new ExtensionPanel();

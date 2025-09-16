@@ -1,34 +1,32 @@
 // listin extension icon action
-/* chrome.action.onClicked.addListener(async (tab) => {
+/* chrome.action.onClicked.addListener((tab) => {
+  console.log("click action");
+  chrome.runtime.sendMessage({ type: "togglePanel" });
+}); */
+
+chrome.action.onClicked.addListener(async (tab) => {
   try {
     // 注入内容脚本
-    await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ["content/panel-component.js"],
-    });
     await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       files: ["content/content-script.js"],
     });
 
-    await new Promise((resolve) => setTimeout(resolve, 50));
-    console.log("action 操作");
+    /* await new Promise((resolve) => setTimeout(resolve, 50));
+    console.log("action 操作"); */
 
+    console.log('action click')
     // 执行切换面板
     await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       function: async () => {
-        await chrome.runtime.sendMessage({ type: "scriptLoaded" });
-        if (window.extensionPanel) {
-          console.log("回调");
-          window.extensionPanel.toggle();
-        }
+        await chrome.runtime.sendMessage({ type: "togglePanel" });
       },
     });
   } catch (error) {
-    console.error("注入面板失败:", error);
+    console.error("切换面板失败:", error);
   }
-}); */
+});
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "saveCoordinates") {
