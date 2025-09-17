@@ -1,4 +1,4 @@
-import { ExtensionPanel } from "./panel-component";
+// import { ExtensionPanel } from "./panel-component";
 
 // const extensionPanel = new ExtensionPanel();
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

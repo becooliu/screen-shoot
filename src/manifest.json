@@ -14,7 +14,7 @@
   },
   "content_scripts": [
     {
-      "js": ["content/panel-component.js"],
+      "js": ["content/panel-component.js", "content/content-script.js"],
       "matches": ["<all_urls>"]
     }
   ],

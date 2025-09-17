@@ -3,29 +3,17 @@
   console.log("click action");
   chrome.runtime.sendMessage({ type: "togglePanel" });
 }); */
-
-chrome.action.onClicked.addListener(async (tab) => {
-  try {
-    // 注入内容脚本
-    await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ["content/content-script.js"],
-    });
-
-    /* await new Promise((resolve) => setTimeout(resolve, 50));
-    console.log("action 操作"); */
-
-    console.log('action click')
-    // 执行切换面板
-    await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      function: async () => {
-        await chrome.runtime.sendMessage({ type: "togglePanel" });
-      },
-    });
-  } catch (error) {
-    console.error("切换面板失败:", error);
-  }
+chrome.action.onClicked.addListener((tabs) => {
+  console.log("action click");
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    chrome.tabs.sendMessage(
+      tabs[0].id,
+      { type: "togglePanel" },
+      function (response) {
+        console.log("Response received from content script:", response);
+      }
+    );
+  });
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
