@@ -11,9 +11,7 @@ class ExtensionPanel {
   async initPanel() {
     await this.createShadowHost();
     await this.loadTemplate();
-    // this.render();
     this.bindEvents();
-    // this.togglePanel();
   }
 
   // 创建shadowroot
@@ -114,18 +112,14 @@ class ExtensionPanel {
       this.show();
     }
   }
-
-  /* togglePanel() {
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      console.log("123");
-      if (message.type === "togglePanel") {
-        console.log("listn togglePanel");
-        this.toggle();
-      }
-    });
-  } */
 }
 
-window.extenssionPanel = ExtensionPanel;
+export { ExtensionPanel };
 
-new ExtensionPanel();
+/* const panel = new ExtensionPanel();
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "togglePanel") {
+    panel.toggle();
+  }
+}); */

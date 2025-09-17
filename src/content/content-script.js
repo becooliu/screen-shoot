@@ -1,10 +1,10 @@
-// import { ExtensionPanel } from "./panel-component";
+import { ExtensionPanel } from "./panel-component";
 
-// const extensionPanel = new ExtensionPanel();
+const panel = new ExtensionPanel();
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log("123");
+  console.log("listen from service worker");
   if (message.type === "togglePanel") {
-    console.log("listn togglePanel");
-    window.extensionPanel.toggle();
+    panel.toggle();
   }
 });
