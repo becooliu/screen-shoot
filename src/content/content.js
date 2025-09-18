@@ -1,13 +1,52 @@
 import { throttle } from "@/utils/tools";
-let selectionActive = false;
+class CaptureRect {
+  constructor(){
+    this.selectionActive = false
+    this.selectionRect = null
+    this.captureMask = null
+    this.startX = 0
+    this.startY = 0
+    this.endX = 0
+    this.endY = 0
+    this.scrollTop = 0
+    this.scrollLeft = 0
+    this.pageX = 0
+    this.pageY = 0
+    this.init()
+  }
+
+  init(){
+    this.createMask()
+    this.startSelection()
+  }
+
+  createMask(){
+    this.captureMask = document.createElement("div");
+    const _style = `position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2147483647; cursor: crosshair; display: none;`;
+    this.captureMask.style = _style;
+    document.body.appendChild(this.captureMask);
+  }
+
+  startSelection(){
+    // active captureMask
+    console.log("start select area...");
+    this.selectionActive = true;
+    this.captureMask.style.display = "block";
+
+    // Listen mouse & key event
+    this.captureMask.addEventListener("mousedown", handleMouseDown);
+    document.addEventListener("keydown", handleKeyEscape);
+  }  
+}
+/* let selectionActive = false;
 let startX, startY, endX, endY, scrollTop, scrollLeft, pageX, pageY;
-let selectionRect = null;
+let selectionRect = null; */
 
 // create selection mask
-const captureMask = document.createElement("div");
+/* const captureMask = document.createElement("div");
 const _style = `position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2147483647; cursor: crosshair; display: none;`;
 captureMask.style = _style;
-document.body.appendChild(captureMask);
+document.body.appendChild(captureMask); */
 
 // Listen message from popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

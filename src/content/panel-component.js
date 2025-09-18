@@ -25,7 +25,7 @@ class ExtensionPanel {
       document.body.appendChild(shadowHost);
 
       this.shadowHost = shadowHost;
-      this.shadowHost.style.cssText = `position: fixed; top: 20px; right: 20px; z-index: 2147481640;`;
+      this.shadowHost.style.cssText = `position: fixed; top: 0px; right: 0px; z-index: 2147481640; display: none;`;
       this.shadowRoot = shadowHost.attachShadow({ mode: "open" });
       await this.loadTemplate();
     } catch (error) {
