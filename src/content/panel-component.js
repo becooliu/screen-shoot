@@ -1,3 +1,5 @@
+import CaptureRect from "./capture";
+const capture_rect = new CaptureRect();
 class ExtensionPanel {
   constructor() {
     this.shadowHost = null;
@@ -59,26 +61,33 @@ class ExtensionPanel {
     }
 
     // 表单按钮
-    const submitBtn = this.shadowRoot.querySelector('[part="submit-button"]');
-    const cancelBtn = this.shadowRoot.querySelector('[part="cancel-button"]');
+    const getAndSavePosition = this.shadowRoot.querySelector(
+      "#getAndSavePosition"
+    );
+    if (getAndSavePosition) {
+      getAndSavePosition.addEventListener("click", () => {
+        console.log("sendMessageToServiceWorker");
+        capture_rect.startSelection();
+      });
+    }
 
-    if (submitBtn) {
+    /* if (submitBtn) {
       submitBtn.addEventListener("click", () => this.handleSubmit());
     }
     if (cancelBtn) {
       cancelBtn.addEventListener("click", () => this.hide());
-    }
+    } */
 
     // 点击外部关闭
-    document.addEventListener("click", this.handleOutsideClick.bind(this));
-    this.shadowRoot.addEventListener("click", (e) => e.stopPropagation());
+    /* document.addEventListener("click", this.handleOutsideClick.bind(this));
+    this.shadowRoot.addEventListener("click", (e) => e.stopPropagation()); */
   }
 
-  handleOutsideClick(e) {
+  /* handleOutsideClick(e) {
     if (this.isVisible && !this.contains(e.target)) {
       this.hide();
     }
-  }
+  } */
 
   handleSubmit() {
     const input = this.shadowRoot.querySelector('[part="input-field"]');

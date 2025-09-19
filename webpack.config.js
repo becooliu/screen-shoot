@@ -14,6 +14,7 @@ module.exports = (env, argv) => {
       "service-worker": "./src/background/service-worker.js",
       "content/content-script": "./src/content/content-script.js",
       "content/panel-component": "./src/content/panel-component.js",
+      "content/capture": "./src/content/capture.js",
     },
     devtool: false,
     output: {

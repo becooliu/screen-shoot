@@ -17,7 +17,6 @@ class CaptureRect {
 
   init() {
     this.createMask();
-    this.startSelection();
   }
 
   createMask() {
@@ -38,10 +37,11 @@ class CaptureRect {
       "mousedown",
       this.handleMouseDown.bind(this)
     );
-    document.addEventListener("keydown", this.handleKeyEscape.bind(this));
+    document.addEventListener("keydown", (e) => this.handleKeyEscape(e));
   }
 
   handleKeyEscape(e) {
+    console.log("Escape event:");
     if (e.key === "Escape") {
       this.clearSelection();
     }
@@ -66,6 +66,7 @@ class CaptureRect {
   }
 
   async handleMouseDown(e) {
+    console.log("mouseDown Event");
     if (!this.selectionActive) return;
 
     this.startX = e.clientX;

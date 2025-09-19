@@ -1,5 +1,5 @@
 import { ExtensionPanel } from "./panel-component";
-import CaptureRect from "./content";
+import CaptureRect from "./capture";
 
 const panel = new ExtensionPanel();
 const capture_rect = new CaptureRect();
@@ -9,9 +9,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "togglePanel") {
     panel.toggle();
   }
-  if (message.action === "startSelection") {
+  /* if (message.action === "startSelection") {
     capture_rect.startSelection();
   } else if (message.action === "captureRect") {
     capture_rect.captureRect();
-  }
+  } */
 });
