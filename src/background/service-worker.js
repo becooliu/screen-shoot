@@ -35,9 +35,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         filename: `coordinates_${Date.now()}.json`,
         saveAs: true,
       });
-
-      // Open page popup after save complete
-      chrome.action.openPopup();
     });
   }
 

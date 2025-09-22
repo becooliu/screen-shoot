@@ -60,14 +60,24 @@ class ExtensionPanel {
       closeBtn.addEventListener("click", () => this.hide());
     }
 
-    // 表单按钮
+    // 选择区域按钮
     const getAndSavePosition = this.shadowRoot.querySelector(
       "#getAndSavePosition"
     );
     if (getAndSavePosition) {
       getAndSavePosition.addEventListener("click", () => {
         console.log("sendMessageToServiceWorker");
+        capture_rect.createMask();
         capture_rect.startSelection();
+      });
+    }
+
+    // 截图
+    const capture = this.shadowRoot.querySelector("#capture");
+    if (capture) {
+      capture.addEventListener("click", () => {
+        console.log("capture");
+        capture_rect.captureRect();
       });
     }
 

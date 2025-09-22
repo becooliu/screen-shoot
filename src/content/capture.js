@@ -12,7 +12,7 @@ class CaptureRect {
     this.scrollLeft = 0;
     this.pageX = 0;
     this.pageY = 0;
-    this.init();
+    // this.init();
   }
 
   init() {
@@ -35,7 +35,7 @@ class CaptureRect {
     // Listen mouse & key event
     this.captureMask.addEventListener(
       "mousedown",
-      this.handleMouseDown.bind(this)
+      (e) =>  this.handleMouseDown(e)
     );
     document.addEventListener("keydown", (e) => this.handleKeyEscape(e));
   }
@@ -90,10 +90,10 @@ class CaptureRect {
     this.selectionRect.style.width = `0px`;
     this.selectionRect.style.height = `0px`;
 
-    document.addEventListener("mousemove", () =>
-      throttle(this.handleMouseMove.bind(this), 50)
+    document.addEventListener("mousemove", (e) =>
+      throttle(this.handleMouseMove(e), 50)
     );
-    document.addEventListener("mouseup", this.handleMouseUp.bind(this));
+    document.addEventListener("mouseup", (e) => this.handleMouseUp(e));
   }
 
   // Create rect selection
@@ -103,6 +103,7 @@ class CaptureRect {
       const _style = `position: fixed; border: 2px dashed #4CAF50; background-color: rgba(76, 175, 80, 0.2); z-index: 2147483647; pointerEvents: none;`;
       this.selectionRect.style = _style;
       document.body.appendChild(this.selectionRect);
+      console.log('Create this.selectionRect')
       resolve();
     });
   }
@@ -123,19 +124,19 @@ class CaptureRect {
     const rectHeight = Math.abs(this.endY - this.startY);
 
     // Set the value of selectionRect
-    console.log("selectionRect", selectionRect);
-    selectionRect.style.left = `${rectX}px`;
-    selectionRect.style.top = `${rectY}px`;
-    selectionRect.style.width = `${rectWidth}px`;
-    selectionRect.style.height = `${rectHeight}px`;
+    console.log("selectionRect", this.selectionRect);
+    this.selectionRect.style.left = `${rectX}px`;
+    this.selectionRect.style.top = `${rectY}px`;
+    this.selectionRect.style.width = `${rectWidth}px`;
+    this.selectionRect.style.height = `${rectHeight}px`;
   }
 
   handleMouseUp() {
     if (!this.selectionActive) return;
     if (this.selectionRect.width == 0 && this.selectionRect.height == 0) return;
 
-    document.removeEventListener("mousemove", this.handleMouseMove.bind(this));
-    document.removeEventListener("mouseup", this.handleMouseUp.bind(this));
+    document.removeEventListener("mousemove", e => this.handleMouseMove(e));
+    document.removeEventListener("mouseup", e => this.handleMouseUp(e));
 
     // caculate rect data again when mouse up
     const rectX = Math.min(this.startX, this.endX);
@@ -185,7 +186,7 @@ class CaptureRect {
           document.documentElement.scrollTop || document.body.scrollTop;
         pagesrollLeft =
           document.documentElement.scrollLeft || document.body.scrollLeft;
-        console.log("check equal:", pageSrollTop, scrollTop);
+        console.log("check equal:", pageSrollTop, this.scrollTop);
         if (
           pageSrollTop == this.scrollTop &&
           pagesrollLeft == this.scrollLeft
@@ -223,6 +224,7 @@ class CaptureRect {
               return;
             }
 
+            console.log('coords', coords)
             // Create image to crop from
             const img = new Image();
             img.onload = function () {
