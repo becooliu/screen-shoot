@@ -1,8 +1,4 @@
 // listin extension icon action
-/* chrome.action.onClicked.addListener((tab) => {
-  console.log("click action");
-  chrome.runtime.sendMessage({ type: "togglePanel" });
-}); */
 chrome.action.onClicked.addListener((tabs) => {
   console.log("action click");
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
