@@ -1,9 +1,11 @@
 import { throttle } from "@/utils/tools";
+import URI from "urijs";
 class CaptureRect {
   constructor() {
     this.selectionActive = false;
     this.selectionRect = null;
     this.captureMask = null;
+    this.siteData = {};
     this.startX = 0;
     this.startY = 0;
     this.endX = 0;
@@ -32,13 +34,23 @@ class CaptureRect {
       this.handleMouseDown(e)
     );
     document.addEventListener("keydown", (e) => this.handleKeyEscape(e));
+    this.getDomainInformation();
   }
 
   handleKeyEscape(e) {
-    console.log("Escape event:");
     if (e.key === "Escape") {
       this.clearSelection();
     }
+  }
+
+  getDomainInformation() {
+    const siteUrl = location.href;
+    const uri = new URI(siteUrl);
+    this.siteData = {
+      domain: uri.domain(),
+      searchString: uri.query(),
+      hashString: uri.hash(),
+    };
   }
 
   clearSelection() {
