@@ -12,11 +12,6 @@ class CaptureRect {
     this.scrollLeft = 0;
     this.pageX = 0;
     this.pageY = 0;
-    // this.init();
-  }
-
-  init() {
-    this.createMask();
   }
 
   createMask() {
@@ -33,9 +28,8 @@ class CaptureRect {
     this.captureMask.style.display = "block";
 
     // Listen mouse & key event
-    this.captureMask.addEventListener(
-      "mousedown",
-      (e) =>  this.handleMouseDown(e)
+    this.captureMask.addEventListener("mousedown", (e) =>
+      this.handleMouseDown(e)
     );
     document.addEventListener("keydown", (e) => this.handleKeyEscape(e));
   }
@@ -66,7 +60,6 @@ class CaptureRect {
   }
 
   async handleMouseDown(e) {
-    console.log("mouseDown Event");
     if (!this.selectionActive) return;
 
     this.startX = e.clientX;
@@ -78,10 +71,8 @@ class CaptureRect {
       document.documentElement.scrollTop || document.body.scrollTop;
     this.scrollLeft =
       document.documentElement.scrollLeft || document.body.scrollLeft;
-    console.log("scrollTop, scrollLeft", this.scrollTop, this.scrollLeft);
 
     if (!this.selectionRect) {
-      console.log("!selectionRect == true");
       await this.createSelectionRect();
     }
 
@@ -103,7 +94,6 @@ class CaptureRect {
       const _style = `position: fixed; border: 2px dashed #4CAF50; background-color: rgba(76, 175, 80, 0.2); z-index: 2147483647; pointerEvents: none;`;
       this.selectionRect.style = _style;
       document.body.appendChild(this.selectionRect);
-      console.log('Create this.selectionRect')
       resolve();
     });
   }
@@ -113,10 +103,6 @@ class CaptureRect {
     // caculate rect corrdinate & size
     this.endX = e.clientX;
     this.endY = e.clientY;
-    console.log("e.clientX, e.clientY", e.clientX, e.clientY);
-
-    console.log("startX, startY: ", this.startX, this.startY);
-    console.log("endX, endY: ", this.endX, this.endY);
 
     const rectX = Math.min(this.startX, this.endX);
     const rectY = Math.min(this.startY, this.endY);
@@ -124,7 +110,6 @@ class CaptureRect {
     const rectHeight = Math.abs(this.endY - this.startY);
 
     // Set the value of selectionRect
-    console.log("selectionRect", this.selectionRect);
     this.selectionRect.style.left = `${rectX}px`;
     this.selectionRect.style.top = `${rectY}px`;
     this.selectionRect.style.width = `${rectWidth}px`;
@@ -135,8 +120,8 @@ class CaptureRect {
     if (!this.selectionActive) return;
     if (this.selectionRect.width == 0 && this.selectionRect.height == 0) return;
 
-    document.removeEventListener("mousemove", e => this.handleMouseMove(e));
-    document.removeEventListener("mouseup", e => this.handleMouseUp(e));
+    document.removeEventListener("mousemove", (e) => this.handleMouseMove(e));
+    document.removeEventListener("mouseup", (e) => this.handleMouseUp(e));
 
     // caculate rect data again when mouse up
     const rectX = Math.min(this.startX, this.endX);
@@ -146,8 +131,8 @@ class CaptureRect {
 
     // Send rect data to service worker
     this.saveCoordinates({
-      x: this.rectX,
-      y: this.rectY,
+      x: rectX,
+      y: rectY,
       scrollLeft: this.pageX,
       scrollTop: this.pageY,
       width: rectWidth,
@@ -170,10 +155,7 @@ class CaptureRect {
 
   // Check if the page scroll to the right coordinates
   async waitPageScroll() {
-    // window.scroll({ top: scrollTop, left: scrollLeft, behavior: "smooth" });
-
     let pageSrollTop, pagesrollLeft;
-    // console.log("---pageSrollTop---", pageSrollTop);
 
     await new Promise((resolve) => {
       const checkScrollAction = () => {
@@ -186,7 +168,6 @@ class CaptureRect {
           document.documentElement.scrollTop || document.body.scrollTop;
         pagesrollLeft =
           document.documentElement.scrollLeft || document.body.scrollLeft;
-        console.log("check equal:", pageSrollTop, this.scrollTop);
         if (
           pageSrollTop == this.scrollTop &&
           pagesrollLeft == this.scrollLeft
@@ -224,7 +205,6 @@ class CaptureRect {
               return;
             }
 
-            console.log('coords', coords)
             // Create image to crop from
             const img = new Image();
             img.onload = function () {
