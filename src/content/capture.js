@@ -53,6 +53,21 @@ class CaptureRect {
     };
   }
 
+  currentUrlHasConfig() {
+    const config = chrome.storage.local.get("regionCoords");
+    const { domain, searchString, hashString } = config.siteData;
+    if (
+      this.siteData.domain.includes(domain) &&
+      this.siteData?.searchString.includes(searchString) &&
+      this.siteData?.hashString.includes(hashString)
+    ) {
+      console.log("true");
+      return true;
+    }
+    console.log("false");
+    return false;
+  }
+
   clearSelection() {
     this.selectionActive = false;
     this.captureMask.style.display = "none";
@@ -149,6 +164,7 @@ class CaptureRect {
       scrollTop: this.pageY,
       width: rectWidth,
       height: rectHeight,
+      siteData: this.siteData,
     });
 
     this.clearSelection();
