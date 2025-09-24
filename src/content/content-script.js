@@ -8,6 +8,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("listen from service worker");
   if (message.type === "togglePanel") {
     panel.toggle();
+    const isCheckUrlHasConfig = capture_rect.checkUrlHasConfig();
+    console.log("isCheckUrlHasConfig: ", isCheckUrlHasConfig);
     sendResponse(true);
   }
   /* if (message.action === "startSelection") {

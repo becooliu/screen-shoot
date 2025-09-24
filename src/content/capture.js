@@ -6,6 +6,7 @@ class CaptureRect {
     this.selectionRect = null;
     this.captureMask = null;
     this.siteData = {};
+    this.config = null;
     this.startX = 0;
     this.startY = 0;
     this.endX = 0;
@@ -53,9 +54,14 @@ class CaptureRect {
     };
   }
 
-  currentUrlHasConfig() {
-    const config = chrome.storage.local.get("regionCoords");
-    const { domain, searchString, hashString } = config.siteData;
+  checkUrlHasConfig() {
+    if (this.config != null) return true;
+    chrome.storage.local.get(["regionCoords"], (result) => {
+      this.config = result.regionCoords.siteData;
+      console.log("config: ", this.config);
+    });
+
+    const { domain, searchString, hashString } = this.config;
     if (
       this.siteData.domain.includes(domain) &&
       this.siteData?.searchString.includes(searchString) &&
