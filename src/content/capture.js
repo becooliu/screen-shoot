@@ -58,20 +58,20 @@ class CaptureRect {
     if (this.config != null) return true;
     chrome.storage.local.get(["regionCoords"], (result) => {
       this.config = result.regionCoords.siteData;
-      console.log("config: ", this.config);
+      console.log("config1: ", this.config);
+      const { domain, searchString, hashString } = this.config;
+      if (
+        this.siteData.domain?.includes(domain) &&
+        this.siteData.searchString?.includes(searchString) &&
+        this.siteData.hashString?.includes(hashString)
+      ) {
+        console.log("true");
+        return true;
+      }
+      console.log("false");
+      return false;
     });
 
-    const { domain, searchString, hashString } = this.config;
-    if (
-      this.siteData.domain.includes(domain) &&
-      this.siteData?.searchString.includes(searchString) &&
-      this.siteData?.hashString.includes(hashString)
-    ) {
-      console.log("true");
-      return true;
-    }
-    console.log("false");
-    return false;
   }
 
   clearSelection() {
