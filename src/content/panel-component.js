@@ -1,5 +1,6 @@
 import CaptureRect from "./capture";
 const capture_rect = new CaptureRect();
+import { matchCurrentURL } from "../utils/urlMatch";
 class ExtensionPanel {
   constructor() {
     this.shadowHost = null;
@@ -7,12 +8,14 @@ class ExtensionPanel {
     this.isVisible = false;
     this.template = null;
     this.shadowRoot = null;
+    this.hasConfig = false;
     this.initPanel();
   }
 
   async initPanel() {
     await this.createShadowHost();
     await this.loadTemplate();
+    await this.checkUrlHasConfig();
     this.bindEvents();
   }
 
@@ -52,6 +55,31 @@ class ExtensionPanel {
     }
   }
 
+  // 检查当前url 是否已有配置
+  async checkUrlHasConfig() {
+    try {
+      await chrome.storage.local.get(["regionCoords"], (result) => {
+        console.log("!!result: ", result);
+        if (Object.keys(result).length < 1) {
+          this.hasConfig = false;
+          return;
+        }
+
+        const config = result?.regionCoords?.siteData;
+        console.log("config1: ", config);
+        const { domain, pathname, search, hash } = config;
+        console.log(
+          "matchCurrentURL",
+          matchCurrentURL(domain, pathname, search, hash)
+        );
+        this.hasConfig = matchCurrentURL(domain, pathname, search, hash);
+      });
+    } catch (error) {
+      console.error("获取截图配置数据失败：", error);
+      this.hasConfig = false;
+    }
+  }
+
   bindEvents() {
     // 关闭按钮
     const closeBtn = this.shadowRoot.querySelector(".close-panel");
@@ -74,9 +102,14 @@ class ExtensionPanel {
     // 截图
     const capture = this.shadowRoot.querySelector("#capture");
     if (capture) {
+      console.log(this.hasConfig, "00000");
       capture.addEventListener("click", () => {
-        this.hide();
-        capture_rect.captureRect();
+        if (this.hasConfig) {
+          this.hide();
+          capture_rect.captureRect();
+        } else {
+          capture.classList.add = "not-allowed";
+        }
       });
     }
   }

@@ -44,34 +44,15 @@ class CaptureRect {
     }
   }
 
+  // 获取url 相关参数并保存，用于后续比对页面是否有配置
   getDomainInformation() {
-    const siteUrl = location.href;
-    const uri = new URI(siteUrl);
+    const uri = new URI(location.href);
     this.siteData = {
       domain: uri.domain(),
-      searchString: uri.query(),
-      hashString: uri.hash(),
+      pathname: uri.pathname(),
+      search: uri.query(),
+      hash: uri.hash(),
     };
-  }
-
-  checkUrlHasConfig() {
-    if (this.config != null) return true;
-    chrome.storage.local.get(["regionCoords"], (result) => {
-      this.config = result.regionCoords.siteData;
-      console.log("config1: ", this.config);
-      const { domain, searchString, hashString } = this.config;
-      if (
-        this.siteData.domain?.includes(domain) &&
-        this.siteData.searchString?.includes(searchString) &&
-        this.siteData.hashString?.includes(hashString)
-      ) {
-        console.log("true");
-        return true;
-      }
-      console.log("false");
-      return false;
-    });
-
   }
 
   clearSelection() {
