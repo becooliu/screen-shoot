@@ -7,6 +7,7 @@
         padding: 0;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background-color: rgba(238, 238, 238, 0.8);
+        color: #000;
         min-height: 100vh;
         height: 100vh;
     }
@@ -103,15 +104,18 @@
 
     .status {
         text-align: center;
-        padding: 10px;
+        padding: 10px 5;
         background: rgba(0, 0, 0, 0.2);
         border-radius: 8px;
     }
-
-    #statusText {
-        margin: 0;
-        font-weight: 500;
-        color: #FFD700;
+    .status #status-text {
+      font-size: 14px;
+    }
+    .status .info {
+      color:#45a049
+    }
+    .status .error {
+      color: #f00
     }
   </style>
 
@@ -136,7 +140,7 @@
       </ol>
     </div>
     <div class="status">
-      <p id="statusText">准备好选择要截图的区域</p>
+      <p id="status-text">准备好选择要截图的区域</p>
     </div>
   </div>
   </div>

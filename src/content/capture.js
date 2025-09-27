@@ -6,7 +6,6 @@ class CaptureRect {
     this.selectionRect = null;
     this.captureMask = null;
     this.siteData = {};
-    this.config = null;
     this.startX = 0;
     this.startY = 0;
     this.endX = 0;
