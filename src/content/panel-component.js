@@ -12,6 +12,8 @@ class ExtensionPanel {
     this.capture = null;
     this.statusText = null;
     this.hasConfig = false;
+    this.switchToMobileEle = null;
+    this.switchToDesktopEle = null;
     this.initPanel();
   }
 
@@ -66,6 +68,20 @@ class ExtensionPanel {
     this.statusText.textContent = "";
 
     this.capture = this.shadowRoot.querySelector("#capture");
+
+    this.switchToMobileEle = this.shadowRoot.querySelector("#switch-to-mobile");
+    this.switchToMobileEle.addEventListener("click", () => {
+      chrome.runtime.sendMessage({
+        type: "switchToMobile",
+      });
+    });
+
+    /* this.switchToDesktopEle = this.shadowRoot.querySelector("#switch-to-desktop");
+    this.switchToDesktopEle.addEventListener("click", () => {
+      chrome.runtime.sendMessage({
+        type: "switchToDesktop",
+      });
+    }); */
   }
 
   bindEvents() {

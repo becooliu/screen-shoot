@@ -3,7 +3,7 @@
   "name": "Chrome coordinate Capture",
   "version": "1.0",
   "description": "use coordinate to capture specified area",
-  "permissions": ["activeTab", "scripting", "downloads", "storage"],
+  "permissions": ["activeTab", "scripting", "downloads", "storage", "debugger"],
   "background": {
     "service_worker": "service-worker.js",
     "type": "module"

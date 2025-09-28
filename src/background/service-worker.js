@@ -1,4 +1,5 @@
 // listin extension icon action
+import { switchDeviceasync } from "./switchDevice";
 chrome.action.onClicked.addListener((tabs) => {
   console.log("action click");
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -54,5 +55,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     // Notify popup that capture is complete
     chrome.runtime.sendMessage({ type: "captureComplete" });
+  }
+
+  if (message.type === "switchToMobile") {
+    // console.log("switch");
+    switchDeviceasync();
   }
 });
