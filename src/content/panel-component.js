@@ -76,12 +76,13 @@ class ExtensionPanel {
       });
     });
 
-    /* this.switchToDesktopEle = this.shadowRoot.querySelector("#switch-to-desktop");
+    this.switchToDesktopEle =
+      this.shadowRoot.querySelector("#switch-to-desktop");
     this.switchToDesktopEle.addEventListener("click", () => {
       chrome.runtime.sendMessage({
         type: "switchToDesktop",
       });
-    }); */
+    });
   }
 
   bindEvents() {

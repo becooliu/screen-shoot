@@ -13,7 +13,7 @@ chrome.action.onClicked.addListener((tabs) => {
   });
 });
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   if (message.type === "saveCoordinates") {
     chrome.storage.local.set({ regionCoords: message.coords }, async () => {
       // Create JSON blob and download
@@ -59,6 +59,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.type === "switchToMobile") {
     // console.log("switch");
-    switchDeviceasync();
+    await switchDeviceasync();
+  }
+  if (message.type === "switchToDesktop") {
+    // console.log("switch");
+    await switchDeviceasync("desktop");
   }
 });
