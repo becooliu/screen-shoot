@@ -13,12 +13,13 @@ chrome.action.onClicked.addListener((tabs) => {
   });
 });
 
-chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "saveCoordinates") {
     chrome.storage.local.set({ regionCoords: message.coords }, async () => {
       // Create JSON blob and download
       const json = JSON.stringify(message.coords, null, 2);
       const blob = new Blob([json], { type: "application/json" });
+      const _domain = message.coords.siteData.domain;
       // const url = URL.createObjectURL(blob);
 
       const dataUrl = await new Promise((resolve) => {
@@ -29,7 +30,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
       chrome.downloads.download({
         url: dataUrl,
-        filename: `coordinates_${Date.now()}.json`,
+        filename: `${_domain}_${Date.now()}.json`,
         saveAs: true,
       });
     });
@@ -59,10 +60,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
   if (message.type === "switchToMobile") {
     // console.log("switch");
-    await switchDeviceasync();
+    switchDeviceasync();
   }
   if (message.type === "switchToDesktop") {
     // console.log("switch");
-    await switchDeviceasync("desktop");
+    switchDeviceasync("desktop");
   }
 });

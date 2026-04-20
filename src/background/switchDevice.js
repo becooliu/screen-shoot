@@ -8,8 +8,8 @@ const devices = {
     mobile: true,
   },
   desktop: {
-    width: "100%",
-    height: "100%",
+    width: 1920,
+    height: 1080,
     userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
     deviceScaleFactor: 1,
     mobile: false,
@@ -18,7 +18,7 @@ const devices = {
 
 async function detachDebuggerFromTarget(tabId) {
   try {
-    await chrome.debugger.detach({ tabId });
+    await chrome.debugger.detach({ tabId: tabId });
     console.log(`Debugger detached from target: ${tabId}`);
   } catch (error) {
     console.error(`Error detaching debugger: ${error.message}`);
@@ -27,9 +27,11 @@ async function detachDebuggerFromTarget(tabId) {
 
 async function detachTarget(tabId) {
   const targets = await chrome.debugger.getTargets();
-  const targetToDetach = targets.find((t) => t.attached == true);
+  console.log("targets", targets);
+  const targetToDetach = targets.find((t) => t.attached == true && t?.tabId);
+  console.log("targetToDetach", targetToDetach);
 
-  if (targetToDetach) {
+  if (Object.keys(targetToDetach)?.length) {
     // console.log("tabId", targetToDetach.tabId);
     await detachDebuggerFromTarget(tabId);
   } else {
@@ -44,6 +46,7 @@ export const switchDeviceasync = async (deviceName = "mobile") => {
 
   try {
     // 完整的错误处理
+    console.log("tab.id:", tab.id);
     await detachTarget(tab.id);
 
     new Promise((resolve) => {
@@ -58,14 +61,7 @@ export const switchDeviceasync = async (deviceName = "mobile") => {
     await chrome.debugger.sendCommand(
       { tabId: tab.id },
       "Emulation.setDeviceMetricsOverride",
-      device,
-      () => {
-        chrome.debugger.sendCommand(
-          { tabId: tab.id },
-          "Emulation.setTouchEmulationEnabled",
-          { enabled: true }
-        );
-      }
+      device
     );
 
     // 设置User Agent

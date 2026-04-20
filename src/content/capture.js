@@ -188,7 +188,6 @@ class CaptureRect {
         ) {
           resolve();
         } else {
-          console.log("--not complete--");
           requestAnimationFrame(checkScrollAction);
         }
       };
@@ -203,6 +202,7 @@ class CaptureRect {
         console.error("No coordinates saved");
         return;
       }
+      const _domain = result.regionCoords?.siteData?.domain
 
       // 检查页面滚动到指定位置后再进行截图
       await this.waitPageScroll().then(() => {
@@ -247,7 +247,7 @@ class CaptureRect {
               chrome.runtime.sendMessage({
                 type: "downloadImage",
                 dataUrl: capturedDataUrl,
-                filename: `coordinate_capture_${Date.now()}.png`,
+                filename: `${_domain}_${Date.now()}.png`,
               });
             };
             img.src = dataUrl;
